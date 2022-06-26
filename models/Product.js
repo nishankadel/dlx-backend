@@ -15,9 +15,7 @@ const ProductSchema = mongoose.Schema({
   price: {
     type: Number,
   },
-  productName: {
-    type: String,
-  },
+
   image: {
     cloudinaryId: {
       type: String,

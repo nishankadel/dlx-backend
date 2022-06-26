@@ -13,7 +13,12 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Setup cors middlewares
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(
+  cors({
+    credentials: true,
+    origin: ["http://localhost:3000", "http://localhost:5000"],
+  })
+);
 
 // use express parsers
 app.use(express.json({}));
