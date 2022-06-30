@@ -16,7 +16,11 @@ const port = process.env.PORT || 8000;
 app.use(
   cors({
     credentials: true,
-    origin: ["http://localhost:3000", "http://localhost:5000"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:5000",
+      "https://drug-loft-xpress.herokuapp.com",
+    ],
   })
 );
 
@@ -34,7 +38,9 @@ app.use(cookieParser());
 app.use("/api/auth/", require("./routers/authRouter"));
 app.use("/api/user/", require("./routers/userRouter"));
 app.use("/api/product/", require("./routers/productRouter"));
+app.use("/api/blog/", require("./routers/blogRouter"));
 app.use("/api/admin/", require("./routers/adminRouter"));
+app.use("/api/comment/", require("./routers/commentRouter"));
 
 app.get("*", (req, res) =>
   res

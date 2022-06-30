@@ -8,6 +8,14 @@ const BlogSchema = mongoose.Schema({
   description: {
     type: String,
   },
+  blogView: {
+    type: Number,
+    default: 0,
+  },
+  commentCount: {
+    type: Number,
+    default: 0,
+  },
   image: {
     cloudinaryId: {
       type: String,
