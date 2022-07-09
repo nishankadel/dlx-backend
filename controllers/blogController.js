@@ -58,3 +58,19 @@ exports.getShowCaseBlogs = async (req, res) => {
     console.log(err);
   }
 };
+
+// @desc   - Search blogs
+// @route  - POST /api/blog/search
+// @access - Public, User]
+exports.searchBlogs = async (req, res) => {
+  const searchText = req.body.searchText;
+  try {
+    const results = await Blog.find({
+      title: { $regex: searchText, $options: "i" },
+    }).select("image title blogView commentCount");
+    res.json({ success: true, results });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Something went wrong." });
+  }
+};

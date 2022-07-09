@@ -1,6 +1,7 @@
 // Import essential modules/packages hereconst Blog = require("../models/Blog");
 const Comment = require("../models/Comment");
 const Product = require("../models/Product");
+const Blog = require("../models/Blog");
 
 // @desc   - add comment to products and blogs
 // @route  - POST /api/comment/add-comment/:id
