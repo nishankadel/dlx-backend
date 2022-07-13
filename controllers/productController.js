@@ -4,7 +4,9 @@ const Favorite = require("../models/Favorite");
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 const axios = require("axios");
+const { sendEmail } = require("../middlewares/sendEmail");
 require("dotenv").config();
+const shuffle = require("../utils/shuffleArray");
 
 // @desc   - Get all products
 // @route  - POST /api/product/all-products
@@ -42,7 +44,9 @@ exports.getShowCaseProducts = async (req, res) => {
       .select("name brand price image onStock id")
       .limit(4)
       .sort("-createdAt");
-    res.json({ success: true, products });
+
+    let shuffleProducts = shuffle(products);
+    res.json({ success: true, products: shuffleProducts });
   } catch (err) {
     res.json({ success: false, message: "Something went wrong." });
     console.log(err);
@@ -133,10 +137,11 @@ exports.getFavorites = async (req, res) => {
     const favorites = await Favorite.findOne({ userId: userId }).populate({
       path: "favorite.productId",
       model: "Product",
-      select: "name image onStock",
+      select: "name image onStock price",
     });
+    const favoriteCounts = favorites.favorite.length;
     if (favorites) {
-      res.json({ success: true, favorites });
+      res.json({ success: true, favorites, favoriteCounts });
     } else {
       res.json({ success: false, message: "No favorites found." });
     }
@@ -439,10 +444,21 @@ exports.searchProducts = async (req, res) => {
 };
 
 // @desc   - Add order history
-// @route  - POST /api/product/order-history
+// @route  - POST /api/product/buy-product
 // @access - Pivate, User
-exports.orderHistory = async (req, res) => {
-  const { userId, token, amount, cartProductId, totalPrice } = req.body;
+exports.buyProduct = async (req, res) => {
+  const {
+    email,
+    fullname,
+    userId,
+    token,
+    amount,
+    cartProductName,
+    cartProductQuantity,
+    cartProductPrice,
+    cartProductId,
+    totalPrice,
+  } = req.body;
   try {
     let data = {
       token: token,
@@ -466,6 +482,8 @@ exports.orderHistory = async (req, res) => {
           paidBy: response.data.user.name,
         });
         order.save();
+        let a = `Product of names ${cartProductName} with price of ${cartProductPrice} and each quantity of ${cartProductQuantity} respectively with total price of Rs ${totalPrice} /-`;
+        sendEmail(email, "d-ef7a82a80d4d44948bf54feca369a1d8", fullname, a);
         res.json({ success: true, message: "Khalti Payment Successful" });
       })
       .catch((error) => {

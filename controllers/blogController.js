@@ -1,5 +1,6 @@
 // create express controller
 const Blog = require("../models/Blog");
+const shuffle = require("../utils/shuffleArray");
 
 // @desc   - get all blogs list
 // @route  - POST /api/blog/all-blogs
@@ -52,7 +53,8 @@ exports.getShowCaseBlogs = async (req, res) => {
       .select("image title blogView commentCount")
       .limit(3)
       .sort("-createdAt");
-    res.json({ success: true, blogs });
+    let shuffleBlogs = shuffle(blogs);
+    res.json({ success: true, blogs: shuffleBlogs });
   } catch (err) {
     res.json({ success: false, message: "Something went wrong." });
     console.log(err);

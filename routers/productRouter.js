@@ -14,7 +14,7 @@ const {
   decreaseCart,
   deleteCart,
   searchProducts,
-  orderHistory,
+  buyProduct,
 } = require("../controllers/productController");
 const { checkUser } = require("../middlewares/auth");
 
@@ -32,6 +32,6 @@ router.post("/delete-cart", checkUser, deleteCart);
 router.post("/clear-cart", checkUser, clearCart);
 router.post("/increase-cart", checkUser, increaseCart);
 router.post("/decrease-cart", checkUser, decreaseCart);
-router.post("/order-history", checkUser, orderHistory);
+router.post("/buy-product", checkUser, buyProduct);
 router.post("/search", searchProducts);
 module.exports = router;
