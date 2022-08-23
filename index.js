@@ -19,7 +19,8 @@ app.use(
     origin: [
       "http://localhost:3000",
       "http://localhost:5000",
-      "https://drug-loft-xpress.herokuapp.com",
+      "https://dlx-admin.netlify.app",
+      "https://dlx.netlify.app",
     ],
   })
 );
