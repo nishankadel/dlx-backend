@@ -20,7 +20,7 @@ app.use(
       "http://localhost:3000",
       "http://localhost:5000",
       "https://dlx-admin.netlify.app",
-      "https://dlx.netlify.app",
+      "https://dlx-client.netlify.app",
     ],
   })
 );
