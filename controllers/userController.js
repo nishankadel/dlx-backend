@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { sendEmail } = require("../middlewares/sendEmail");
 const Feedback = require("../models/Feedback");
 const Order = require("../models/Order");
+const bcrypt = require("bcryptjs");
 
 // @desc   - Get user profile
 // @route  - POST /api/user/profile
@@ -119,6 +120,64 @@ exports.updateProfile = async (req, res) => {
       res.json({
         success: true,
         message: `User profile updated successfully.`,
+      });
+    }
+  } catch (error) {
+    res.json({
+      success: false,
+      message: "Something went wrong",
+    });
+    console.log(error);
+  }
+};
+
+// @desc   - Change Password
+// @route  - POST /api/user/change-password
+// @access - Private, User
+exports.changePassword = async (req, res) => {
+  const { id, currentPassword, newPassword, confirmNewPassword } = req.body;
+  try {
+    const passwordRegeex = new RegExp(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/
+    );
+    const user = await User.findById({ _id: id });
+    const hashedPassword = bcrypt.compareSync(currentPassword, user.password);
+
+    if (newPassword !== confirmNewPassword) {
+      return res.json({
+        success: false,
+        message: "New passwords doesn't match.",
+      });
+    }
+    if (newPassword.length < 8) {
+      return res.json({
+        success: false,
+        message: "Password requires atleast 8 characters.",
+      });
+    }
+    if (passwordRegeex.test(newPassword) == false) {
+      return res.json({
+        success: false,
+        message:
+          "Password requires one uppercase, one lowercase and one special character.",
+      });
+    }
+    if (hashedPassword === true) {
+      const newHashedPassword = await bcrypt.hash(newPassword, 10);
+      await User.findByIdAndUpdate(
+        id,
+        { password: newHashedPassword },
+        { new: true }
+      );
+
+      return res.json({
+        success: true,
+        message: "Password changed successfully. Login wirh new password.",
+      });
+    } else {
+      return res.json({
+        success: false,
+        message: "Current password doesn't match.",
       });
     }
   } catch (error) {
