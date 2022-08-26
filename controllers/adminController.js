@@ -2,6 +2,7 @@
 const cloudinary = require("../middlewares/cloudinary");
 const Product = require("../models/Product");
 const User = require("../models/User");
+const Labtest = require("../models/Labtest");
 const Blog = require("../models/Blog");
 const bcrypt = require("bcryptjs");
 const { sendToken } = require("../utils/jwtToken");
@@ -352,11 +353,13 @@ exports.getDashboard = async (req, res) => {
     const all_users = await User.find().countDocuments();
     const all_products = await Product.find().countDocuments();
     const all_blogs_list = await Blog.find().countDocuments();
+    const all_labtests = await Labtest.find().countDocuments();
     return res.status(200).json({
       success: true,
       all_users,
       all_products,
       all_blogs_list,
+      all_labtests,
     });
   } catch (error) {
     console.log(error);
@@ -364,3 +367,48 @@ exports.getDashboard = async (req, res) => {
   }
 };
 // x--------------x-----------------------DASHBOARD----------------x----------------x
+
+// x--------------x-----------------------LABTEST----------------x----------------x
+// @route     GET api/admin/all-labtests
+// @desc      Get all labtest list
+// @access    Private, Admin
+exports.getAllLabtests = async (req, res) => {
+  try {
+    const labtests = await Labtest.find().populate({
+      path: "userId",
+      select: "fullname email",
+    });
+    res.json({ success: true, labtests });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: "Something went wrong" });
+  }
+};
+
+// @route     Update api/admin/update-labtest/
+// @desc      Update labtest
+// @access    Private, Admin
+exports.updateLabtest = async (req, res) => {
+  const { userId, id, status, feedback, result } = req.body;
+  try {
+    const labtest = await Labtest.findOne({ _id: id.trim() });
+    if (!labtest) {
+      return res.json({ success: false, message: "Labtest not found." });
+    } else {
+      await Labtest.findOneAndUpdate(
+        { userId: userId.trim() },
+        { status, feedback, result },
+        {
+          new: true,
+        }
+      );
+      return res.json({
+        success: true,
+        message: `Labtest updated successfully.`,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.json({ success: false, message: "Something went wrong" });
+  }
+};

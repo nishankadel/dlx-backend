@@ -15,6 +15,8 @@ const {
   deleteBlog,
   login,
   getDashboard,
+  getAllLabtests,
+  updateLabtest,
 } = require("../controllers/adminController");
 const { checkAdmin } = require("../middlewares/auth");
 const upload = require("../middlewares/multer");
@@ -47,5 +49,10 @@ router.post("/delete-blog/:id", checkAdmin, deleteBlog);
 // x--------------x-----------------------DASHBOARD----------------x----------------x
 router.get("/dashboard", checkAdmin, getDashboard);
 // x--------------x-----------------------DASHBOARD----------------x----------------x
+
+// x--------------x-----------------------LABTEST----------------x----------------x
+router.get("/all-labtests", checkAdmin, getAllLabtests);
+router.post("/update-labtest", checkAdmin, updateLabtest);
+// x--------------x-----------------------LABTEST----------------x----------------x
 
 module.exports = router;

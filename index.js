@@ -42,6 +42,7 @@ app.use("/api/product/", require("./routers/productRouter"));
 app.use("/api/blog/", require("./routers/blogRouter"));
 app.use("/api/admin/", require("./routers/adminRouter"));
 app.use("/api/comment/", require("./routers/commentRouter"));
+app.use("/api/labtest/", require("./routers/labtestRouter"));
 
 app.get("*", (req, res) =>
   res
